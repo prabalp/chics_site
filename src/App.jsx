@@ -8,6 +8,7 @@ import Cart from "./pages/Cart";
 const App = () => {
   return <Product/>;
   // edit register and login heavily
+  // this page is of no use
 };
 
 export default App;
