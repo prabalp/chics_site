@@ -1,5 +1,10 @@
 import styled from "styled-components";
 import { mobile } from "../responsive";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {getFirestore, doc, setDoc } from "firebase/firestore"
+import { useState} from "react";
+import { useNavigate } from 'react-router-dom'
+import app from "../firebase";
 
 const Container = styled.div`
   width: 100vw;
@@ -54,23 +59,85 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
+
 const Register = () => {
+  // create a way to save more info like phone number, address, etc.
+const [email, setemail] = useState("")
+const [password, setpassword] = useState("")
+const [firstname, setfirstname] = useState("")
+const [lastname, setlastname] = useState("")
+const [username, setusername] = useState("")
+const [phone, setphone] = useState("")
+const [address, setaddress] = useState("")
+
+
+
+//code for firestore db
+const navigate = useNavigate();
+
+
+const handleRegister = () => {
+  const auth = getAuth(app);
+  createUserWithEmailAndPassword(auth, email, password)
+  .then((userCredential) => {
+    // Signed in
+    console.log("Signed in")
+    const user = userCredential.user;
+    const db = getFirestore(app);
+
+
+
+    setDoc(doc(db, "users", user.uid), {
+      email: user.email,
+      // uid: user.uid,
+      firstname: firstname ,
+      lastname: lastname,
+      username: username,
+      phone: phone,
+      address: address,
+      cart: [],
+      history: [],
+    })
+    .then(() => {
+      console.log("Document successfully written!");
+      // alert("Done")
+      // history.push("/login")
+      navigate("/login")
+    })
+    .catch((error) => {
+      console.error("Error writing document: ", error);
+    })
+
+    // ...
+  })
+  .catch((error) => {
+    console.log(error.message)
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    // ..
+  });
+}
+
+const handleSubmit = (e) => {
+  e.preventDefault();
+  handleRegister();
+}
   return (
     <Container>
       <Wrapper>
         <Title>CREATE AN ACCOUNT</Title>
         <Form>
-          <Input placeholder="name" />
-          <Input placeholder="last name" />
-          <Input placeholder="username" />
-          <Input placeholder="email" />
-          <Input placeholder="password" />
-          <Input placeholder="confirm password" />
+          <Input placeholder="Firstname" onChange={(e)=>{setfirstname(e.target.value)}}  value={firstname}/>
+          <Input placeholder="Lastname" onChange={(e)=>{setlastname(e.target.value)}}  value={lastname}/>
+          <Input placeholder="Username" onChange={(e)=>{setusername(e.target.value)}}  value={username} />
+          <Input placeholder="Email" onChange={(e)=>{setemail(e.target.value)}}  value={email}/>
+          <Input placeholder="Password" onChange={(e)=>{setpassword(e.target.value)}}  value={password}/>
+          <Input placeholder="Confirm Password" onChange={(e)=>{}} />
           <Agreement>
             By creating an account, I consent to the processing of my personal
             data in accordance with the <b>PRIVACY POLICY</b>
           </Agreement>
-          <Button>CREATE</Button>
+          <Button onClick={handleSubmit}>CREATE</Button>
         </Form>
       </Wrapper>
     </Container>

@@ -1,8 +1,12 @@
+// complet the responsive part
+
+
 import { Badge } from "@material-ui/core";
 import { Search, ShoppingCartOutlined } from "@material-ui/icons";
 import React from "react";
 import styled from "styled-components";
 import { mobile } from "../responsive";
+import {Link} from "react-router-dom";
 
 const Container = styled.div`
   height: 60px;
@@ -51,6 +55,11 @@ const Logo = styled.h1`
   font-weight: bold;
   ${mobile({ fontSize: "24px" })}
 `;
+
+const StyledLink = styled(Link)`
+  text-decoration: none;
+  color: inherit;
+`;
 const Right = styled.div`
   flex: 1;
   display: flex;
@@ -78,11 +87,11 @@ const Navbar = () => {
           </SearchContainer>
         </Left>
         <Center>
-          <Logo>LAMA.</Logo>
+          <StyledLink to={'/'}><Logo>CHICS</Logo></StyledLink>
         </Center>
         <Right>
-          <MenuItem>REGISTER</MenuItem>
-          <MenuItem>SIGN IN</MenuItem>
+          <MenuItem><StyledLink to= {'/register'}>REGISTER</StyledLink></MenuItem>
+          <MenuItem><StyledLink to = {'/login'}>SIGN IN</StyledLink></MenuItem>
           <MenuItem>
             <Badge badgeContent={4} color="primary">
               <ShoppingCartOutlined />
