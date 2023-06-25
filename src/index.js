@@ -1,9 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-// import store from "./store";
-import { Provider } from "react-redux";
-
 // import App from "./App";
 import Product from "./pages/Product";
 import Home from "./pages/Home";
@@ -12,6 +9,7 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Cart from "./pages/Cart";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+// import { UserAuthContextProvider } from "./context/UserAuthContext";
 
 const router = createBrowserRouter([
   // {
@@ -58,9 +56,9 @@ const router = createBrowserRouter([
 
 ReactDOM.render(
   <React.StrictMode>
-    {/* <Provider store={store}> */}
+    {/* <UserAuthContextProvider> */}
     <RouterProvider router={router} />
-    {/* </Provider> */}
+    {/* </UserAuthContextProvider> */}
   </React.StrictMode>,
   document.getElementById("root")
 );

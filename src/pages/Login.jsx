@@ -68,8 +68,21 @@ const StyledLink = styled(Link)`
 const Login = () => {
   const [email, setemail] = useState("")
   const [password, setpassword] = useState("")
-
   const navigate = useNavigate();
+  useEffect(() => {
+    const auth = getAuth(app);
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        console.log('haha')
+        navigate("/")
+      } else {
+        // User is signed out
+        // ...
+      }
+      // ...
+    });
+    return unsubscribe;
+  }, );
 
   const handleLogin = (e) => {  
     e.preventDefault()

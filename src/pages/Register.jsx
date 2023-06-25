@@ -6,6 +6,8 @@ import { useState} from "react";
 import { useNavigate } from 'react-router-dom'
 import app from "../firebase";
 
+// import { addUserInfo } from "../state";
+
 const Container = styled.div`
   width: 100vw;
   height: 100vh;
@@ -76,17 +78,15 @@ const [address, setaddress] = useState("")
 const navigate = useNavigate();
 
 
+
 const handleRegister = () => {
   const auth = getAuth(app);
   createUserWithEmailAndPassword(auth, email, password)
-  .then((userCredential) => {
+  .then(async(userCredential) => {
     // Signed in
     console.log("Signed in")
     const user = userCredential.user;
     const db = getFirestore(app);
-
-
-
     setDoc(doc(db, "users", user.uid), {
       email: user.email,
       // uid: user.uid,
