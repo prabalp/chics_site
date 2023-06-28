@@ -4,6 +4,7 @@ import {
   ShoppingCartOutlined,
 } from "@material-ui/icons";
 import styled from "styled-components";
+import {useNavigate} from "react-router-dom"
 
 const Info = styled.div`
   opacity: 0;
@@ -31,6 +32,7 @@ const Container = styled.div`
   justify-content: center;
   background-color: #f5fbfd;
   position: relative;
+  cursor: pointer;
 
   &:hover ${Info}{
     opacity: 1;
@@ -66,13 +68,20 @@ const Icon = styled.div`
   }
 `;
 
-const Product = ({ item }) => {
+const Product = ({ item, id }) => {
+ 
+  const navigate = useNavigate();
+  const handleClick = () => {
+    console.log("clicked", id)
+    navigate("/product/" + id)
+  }
+
   return (
-    <Container>
+    <Container onClick={handleClick}>
       <Circle />
-      <Image src={item.img} />
+      <Image src={item.image} />
       <Info>
-        <Icon>
+        {/* <Icon>
           <ShoppingCartOutlined />
         </Icon>
         <Icon>
@@ -80,7 +89,7 @@ const Product = ({ item }) => {
         </Icon>
         <Icon>
           <FavoriteBorderOutlined />
-        </Icon>
+        </Icon> */}
       </Info>
     </Container>
   );

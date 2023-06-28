@@ -2,12 +2,13 @@ import React from "react";
 import ReactDOM from "react-dom";
 
 // import App from "./App";
-import Product from "./pages/Product";
+import Product, { productLoader } from "./pages/Product";
 import Home from "./pages/Home";
 import ProductList from "./pages/ProductList";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Cart from "./pages/Cart";
+import Admin from "./pages/Admin";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 // import { UserAuthContextProvider } from "./context/UserAuthContext";
 
@@ -19,8 +20,9 @@ const router = createBrowserRouter([
   // },
   {
     // path: "/product/:productId",
-    path: "/product",
+    path: "/product/:id",
     element: <Product />,
+    loader: productLoader,
   },
   {
     path: "/",
@@ -41,6 +43,10 @@ const router = createBrowserRouter([
   {
     path: "/cart",
     element: <Cart />,
+  },
+  {
+    path: "/admin",
+    element: <Admin />,
   },
 ]);
 

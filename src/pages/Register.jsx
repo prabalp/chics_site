@@ -97,11 +97,11 @@ const handleRegister = () => {
       address: address,
       cart: [],
       history: [],
+      wishlist: [],
+      orders: [],
     })
     .then(() => {
       console.log("Document successfully written!");
-      // alert("Done")
-      // history.push("/login")
       navigate("/login")
     })
     .catch((error) => {
@@ -112,8 +112,8 @@ const handleRegister = () => {
   })
   .catch((error) => {
     console.log(error.message)
-    const errorCode = error.code;
-    const errorMessage = error.message;
+    // const errorCode = error.code;
+    // const errorMessage = error.message;
     // ..
   });
 }

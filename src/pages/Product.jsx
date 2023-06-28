@@ -5,6 +5,15 @@ import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import Newsletter from "../components/Newsletter";
 import { mobile } from "../responsive";
+import {doc, getDoc, setDoc} from "firebase/firestore";
+import { useLoaderData } from "react-router-dom";
+import { useState } from "react";
+import {auth, db} from "../firebase"
+import { useNavigate } from 'react-router-dom'
+
+
+// write code such that only the required part in rendered
+
 
 const Container = styled.div``;
 
@@ -66,6 +75,8 @@ const FilterColor = styled.div`
   width: 20px;
   height: 20px;
   border-radius: 50%;
+  // outline: 2px solid teal;
+  // outline-offset: 2px;
   background-color: ${(props) => props.color};
   margin: 0px 5px;
   cursor: pointer;
@@ -109,23 +120,119 @@ const Button = styled.button`
   background-color: white;
   cursor: pointer;
   font-weight: 500;
-
+  max-height: 60px;
+  min-width: 80px;
   &:hover{
       background-color: #f8f4f4;
   }
 `;
 
+
+// // Understand the complet meaning of loader
+export async function productLoader({params}){
+  const docRef = doc(db, "testProducts", params.id);
+  const product = await getDoc(docRef);
+  return product.data();
+}
+
+
 const Product = () => {
+  const [quantity, setQuantity] = useState(1);
+  const [size, setSize] = useState("L");
+  const [color, setColor] = useState("Black");
+  const [userID, setuserID] = useState("");
+  
+  const data = useLoaderData();
+  console.log(data)
+  const navigate = useNavigate();
+
+  // const isSignedIn = async () => {
+  //   const user_state = await auth.onAuthStateChanged((user) => {
+  //     if (user) {
+  //       setuserID(user.uid);
+  //       return true;
+  //     } else {
+  //       console.log("User is not signed in")
+  //       navigate("/login")
+  //       return false;
+  //     }
+  //   });
+
+  //   return user_state;
+  // }
+  const addToCart = async () => {
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        setuserID(user.uid);
+        setDoc(doc(db,"users", user.uid), {
+          // code to append to the card item
+          cart: [{
+            [data.id]: {
+              name: data.name,
+              image: data.image,
+              price: data.price,
+              quantity: quantity,
+              size: size,
+              color: color,
+              },
+              }],
+        }).then(()=>{
+          console.log("Item added to cart successfully")
+        }).catch((error)=>{
+          console.error("Error writing document: ", error);
+        });
+      } else {
+        console.log("User is not signed in")
+        navigate("/login")
+      }
+    });
+    // console.log("Added to Cart")
+  }
+
+        
+
+
+    
+  
+
+  const addToWishlist = () => {
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        setuserID(user.uid);
+        setDoc(doc(db,"users", user.uid), {
+          // code to append to the card item
+          wishlist: [{
+            [data.id]: {
+              name: data.name,
+              image: data.image,
+              price: data.price,
+              quantity: quantity,
+              size: size,
+              color: color,
+              },
+              }],
+        }).then(()=>{
+          console.log("Item added to wishlist successfully")
+        }).catch((error)=>{
+          console.error("Error writing document: ", error);
+        });
+      } else {
+        console.log("User is not signed in")
+        navigate("/login")
+      }
+    })
+    // console.log("Added to Wishlist")
+  }
   return (
     <Container>
       <Navbar />
       <Announcement />
       <Wrapper>
         <ImgContainer>
-          <Image src="https://i.ibb.co/S6qMxwr/jean.jpg" />
+          <Image src={data.image}/>
         </ImgContainer>
         <InfoContainer>
-          <Title>Denim Jumpsuit</Title>
+          <Title>{data.name}</Title>
           <Desc>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
             venenatis, dolor in finibus malesuada, lectus ipsum porta nunc, at
@@ -133,13 +240,18 @@ const Product = () => {
             tristique tortor pretium ut. Curabitur elit justo, consequat id
             condimentum ac, volutpat ornare.
           </Desc>
-          <Price>$ 20</Price>
+          <Price>INR {data.price}</Price>
           <FilterContainer>
             <Filter>
               <FilterTitle>Color</FilterTitle>
-              <FilterColor color="black" />
+              <FilterSize>
+                <FilterSizeOption >Black</FilterSizeOption>
+                <FilterSizeOption>Blue</FilterSizeOption>
+                <FilterSizeOption>Gray</FilterSizeOption>
+              </FilterSize>
+              {/* <FilterColor color="black" />
               <FilterColor color="darkblue" />
-              <FilterColor color="gray" />
+              <FilterColor color="gray" /> */}
             </Filter>
             <Filter>
               <FilterTitle>Size</FilterTitle>
@@ -154,11 +266,12 @@ const Product = () => {
           </FilterContainer>
           <AddContainer>
             <AmountContainer>
-              <Remove />
-              <Amount>1</Amount>
-              <Add />
+              <Remove onClick={()=>{return quantity == 1 ? 1:setQuantity(quantity-1)}}/>
+              <Amount>{quantity}</Amount>
+              <Add onClick ={()=>setQuantity(quantity+1)}/>
             </AmountContainer>
-            <Button>ADD TO CART</Button>
+            <Button onClick={addToCart}>Add to Cart</Button>
+            <Button onClick={addToWishlist}>Wishlist</Button>
           </AddContainer>
         </InfoContainer>
       </Wrapper>
